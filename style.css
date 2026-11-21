@@ -1,4 +1,3 @@
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -32,7 +31,8 @@ h1, h2, h3 {
     display: none;
 }
 
-/* Header - University Pages */
+
+/* Header */
 
 .hero {
     background: linear-gradient(
@@ -41,6 +41,7 @@ h1, h2, h3 {
         var(--sky) 70%,
         #6bb7e3
     );
+
     color: white;
     padding: 50px 20px 80px;
 }
@@ -69,9 +70,6 @@ h1, h2, h3 {
     text-decoration: underline;
 }
 
-.hero .badge {
-    margin-bottom: 14px;
-}
 
 /* Main Container */
 
@@ -81,7 +79,8 @@ h1, h2, h3 {
     padding: 0 20px 50px;
 }
 
-/* White Cards */
+
+/* Cards */
 
 .card-box {
     background: white;
@@ -89,6 +88,7 @@ h1, h2, h3 {
     border: 1px solid var(--line);
     box-shadow: 0 4px 18px rgba(39, 106, 153, 0.10);
 }
+
 
 /* Form Controls */
 
@@ -117,7 +117,8 @@ select:focus, input:focus {
     border-color: var(--sky);
 }
 
-/* Home / Dashboard */
+
+/* Home Page */
 
 .container.home {
     margin-top: 0;
@@ -141,17 +142,21 @@ select:focus, input:focus {
     color: var(--muted);
 }
 
-/* Public / Private Box */
+
+/* Public University Box */
 
 .button-box {
     width: 340px;
     max-width: 100%;
     margin: 60px auto;
     padding: 36px 34px 40px;
+
     display: flex;
     flex-direction: column;
     gap: 18px;
+
     text-align: center;
+
     background: var(--sky-card);
     border: 1px solid #cfe5f5;
     border-bottom: 4px solid var(--sky);
@@ -179,14 +184,16 @@ select:focus, input:focus {
     color: white;
 }
 
-/* University List Page */
+
+/* University List */
 
 .list-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 40px;
-    margin-bottom: 25px;
+    margin: 40px 0 25px;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 .chip {
@@ -201,38 +208,31 @@ select:focus, input:focus {
     color: var(--sky-dark);
 }
 
-.right {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-#locText {
-    margin: 20px 0 24px;
-    font-size: 14px;
-    color: var(--muted);
-}
-
-/* University Buttons */
-
 .uni-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px 40px;
 }
 
+
+/* University Buttons */
+
 .uni-btn {
     display: flex;
     flex-direction: column;
     gap: 6px;
+
     min-height: 78px;
     padding: 16px 20px;
+
     background: var(--sky-card);
     color: var(--text);
     text-decoration: none;
+
     border-radius: 10px;
     border: 1px solid #cfe5f5;
     border-bottom: 4px solid var(--sky);
+
     box-shadow: 0 3px 12px rgba(39, 106, 153, 0.07);
     transition: 0.2s;
 }
@@ -256,11 +256,15 @@ select:focus, input:focus {
     color: var(--muted);
 }
 
+
+/* Back Button */
+
 .back-button {
     display: block;
     width: 110px;
     margin: 50px 0 0 auto;
     padding: 11px;
+
     background: var(--sky);
     border-color: var(--sky);
     color: white;
@@ -272,30 +276,28 @@ select:focus, input:focus {
     border-color: var(--sky-dark);
 }
 
+
 /* Badges */
 
 .badge {
-    align-self: flex-start;
     display: inline-block;
     padding: 4px 14px;
     border-radius: 20px;
+
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
+
     background: white;
     color: var(--sky-dark);
-}
-
-.badge.private {
-    background: #eef0fb;
-    color: #4a54a8;
 }
 
 .hero .badge {
     background: rgba(255, 255, 255, 0.22);
     color: white;
 }
+
 
 /* Quick Facts */
 
@@ -327,6 +329,7 @@ select:focus, input:focus {
     line-height: 1.5;
 }
 
+
 /* Main Details Layout */
 
 .main {
@@ -343,6 +346,7 @@ select:focus, input:focus {
 #info {
     padding: 30px 34px;
 }
+
 
 /* Information Blocks */
 
@@ -375,6 +379,7 @@ select:focus, input:focus {
     color: var(--muted);
 }
 
+
 /* University Units */
 
 .unit {
@@ -391,6 +396,7 @@ select:focus, input:focus {
     margin-bottom: 2px;
     color: var(--sky-dark);
 }
+
 
 /* Notes and Links */
 
@@ -421,80 +427,6 @@ select:focus, input:focus {
 
 .linkbtn:hover {
     background: var(--sky-dark);
-}
-
-.linkbtn.light {
-    background: var(--sky-light);
-    color: var(--sky-dark);
-}
-
-.linkbtn.light:hover {
-    background: #d3e8f6;
-}
-
-/* Eligibility Card */
-
-.eligibility {
-    width: 340px;
-    flex-shrink: 0;
-    padding: 30px 28px;
-    position: sticky;
-    top: 20px;
-    border-bottom: 4px solid var(--sky-dark);
-}
-
-.eligibility h3 {
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--sky-dark);
-}
-
-.hint {
-    margin: 10px 0 24px;
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--muted);
-}
-
-.field {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-bottom: 18px;
-}
-
-.field label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--muted);
-}
-
-.field input,
-.field select {
-    display: block;
-    width: 100%;
-    padding: 12px;
-}
-
-.primary {
-    width: 100%;
-    margin-top: 8px;
-    padding: 13px;
-    background: var(--sky);
-    border-color: var(--sky);
-    color: white;
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.primary:hover {
-    background: var(--sky-dark);
-    border-color: var(--sky-dark);
 }
 
 
@@ -562,4 +494,105 @@ select:focus, input:focus {
 .primary:hover {
     background: var(--sky-dark);
     border-color: var(--sky-dark);
+}
+
+
+/* Eligibility Results */
+
+#result {
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.ok {
+    padding: 14px;
+    background: #e9f7ef;
+    border-left: 4px solid #35a66a;
+    border-radius: 8px;
+    color: #246b45;
+}
+
+.warn {
+    padding: 14px;
+    background: #fff8e6;
+    border-left: 4px solid #e8b53a;
+    border-radius: 8px;
+    color: #80601a;
+}
+
+.no {
+    padding: 14px;
+    background: #fdeeee;
+    border-left: 4px solid #d9534f;
+    border-radius: 8px;
+    color: #963b38;
+}
+
+
+/* Footer */
+
+.footer {
+    padding: 22px 20px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    background: white;
+    border-top: 1px solid var(--line);
+}
+
+
+/* Responsive Design */
+
+@media (max-width: 800px) {
+
+    .main {
+        flex-direction: column;
+    }
+
+    .details {
+        width: 100%;
+    }
+
+    .eligibility {
+        width: 100%;
+        position: static;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .uni-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .page-title {
+        font-size: 27px;
+        letter-spacing: 2px;
+    }
+
+    .hero h1 {
+        font-size: 27px;
+    }
+
+    #info {
+        padding: 22px 20px;
+    }
+
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+}
+
+.container:not(.home) {
+    margin-top: 0;
+    padding-top: 30px;
 }

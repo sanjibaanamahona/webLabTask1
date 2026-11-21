@@ -1,104 +1,191 @@
+const universities = [
 
-let currentType = "public";
+    {
+        name: "Bangladesh University of Engineering and Technology (BUET)",
+        file: "buet.html",
+        deadline: "2027-01-07",
+        fee: 1300
+    },
 
-// Open the Public or Private university list
-function showUniversities(type) {
-    currentType = type;
+    {
+        name: "Bangladesh University of Professionals",
+        file: "bup.html",
+        deadline: "",
+        fee: 1100
+    },
+
+    {
+        name: "Dhaka University",
+        file: "du.html",
+        deadline: "2026-11-25",
+        fee: 1200
+    },
+
+    {
+        name: "Jahangirnagar University",
+        file: "ju.html",
+        deadline: "2026-12-15",
+        fee: 800
+    },
+
+    {
+        name: "Chittagong University of Engineering & Technology (CUET)",
+        file: "cuet.html",
+        deadline: "",
+        fee: null
+    },
+
+    {
+        name: "Rajshahi University of Engineering & Technology (RUET)",
+        file: "ruet.html",
+        deadline: "",
+        fee: null
+    },
+
+    {
+        name: "Khulna University of Engineering & Technology (KUET)",
+        file: "kuet.html",
+        deadline: "",
+        fee: null
+    },
+
+    {
+        name: "University of Chittagong",
+        file: "cu.html",
+        deadline: "2026-12-10",
+        fee: 1000
+    },
+
+    {
+        name: "Rajshahi University",
+        file: "ru.html",
+        deadline: "2026-11-30",
+        fee: 1100
+    },
+
+    {
+        name: "GST",
+        file: "gst.html",
+        deadline: "",
+        fee: null
+    },
+
+    {
+        name: "Military Institute of Science and Technology",
+        file: "mist.html",
+        deadline: "",
+        fee: null
+    }
+
+];
 
 
+// Show University List
+function showUniversities() {
 
-    document.getElementById("homePage").classList.add("hidden");
-    document.getElementById("universityPage").classList.remove("hidden");
+    document.getElementById("homePage")
+        .classList.add("hidden");
 
-    document.getElementById("pageTitle").textContent =
-        type === "public" ? "Public Universities" : "Private Universities";
+    document.getElementById("universityPage")
+        .classList.remove("hidden");
 
     render();
+
 }
 
 
-// Back to the home page
+// Back to Home
 function goBack() {
 
-    document.getElementById("universityPage").classList.add("hidden");
-    document.getElementById("homePage").classList.remove("hidden");
+    document.getElementById("universityPage")
+        .classList.add("hidden");
 
-    currentType = "public";
+    document.getElementById("homePage")
+        .classList.remove("hidden");
+
 }
 
 
-// Display and sort universities
+// Format Date
+function formatDate(iso) {
+
+    if (!iso) return "Deadline not added";
+
+    const p = iso.split("-");
+
+    const m = [
+        "January", "February", "March", "April",
+        "May", "June", "July", "August",
+        "September", "October", "November", "December"
+    ];
+
+    return Number(p[2]) + " " +
+        m[Number(p[1]) - 1] + " " + p[0];
+
+}
+
+
+// Render University List
 function render() {
 
-    // Get universities according to selected type
-    let list = universities.filter(function (u) {
-        return u.type === currentType;
-    });
-
-    // Get selected sorting option
     const sort = document.getElementById("sort").value;
 
-    // Sort universities
-    list.sort(function (a, b) {
+    const list = [...universities];
 
-        // Alphabetical order
+    list.sort((a, b) => {
+
         if (sort === "alpha") {
             return a.name.localeCompare(b.name);
         }
 
-        // Application deadline (earliest first)
         if (sort === "deadline") {
-            return (a.deadline || "9999").localeCompare(
-                b.deadline || "9999"
-            );
+            return (a.deadline || "9999")
+                .localeCompare(b.deadline || "9999");
         }
 
-        // Application fee (lowest first)
-        if (sort === "fee") {
-            return (a.fee ?? 1e9) - (b.fee ?? 1e9);
-        }
+        return (a.fee ?? 999999) - (b.fee ?? 999999);
 
-        return 0;
     });
 
 
-    // Get university list container
     const box = document.getElementById("universityList");
 
-    // Clear previous university cards
     box.innerHTML = "";
 
 
-    // Create university cards
-    list.forEach(function (u) {
+    list.forEach(u => {
 
-        const card = document.createElement("a");
+        const a = document.createElement("a");
 
-        card.className = "uni-btn";
-        card.href = "university.html?id=" + encodeURIComponent(u.id);
+        a.className = "uni-btn";
+        a.href = u.file;
 
-        const name = document.createElement("b");
-        name.textContent = u.name;
 
-        const details = document.createElement("span");
+        const b = document.createElement("b");
 
-        const deadline = u.deadline
-            ? formatDate(u.deadline)
-            : "Deadline not added";
+        b.textContent = u.name;
 
-        const fee = u.fee === null
-            ? "Fee not added"
-            : u.fee + " Tk";
 
-        details.textContent = deadline + " | " + fee;
+        const s = document.createElement("span");
 
-        card.appendChild(name);
-        card.appendChild(details);
+        s.textContent =
+            formatDate(u.deadline) +
+            " | " +
+            (u.fee == null ? "Fee not added" : u.fee + " Tk");
 
-        box.appendChild(card);
+
+        a.append(b, s);
+
+        box.appendChild(a);
+
     });
+
 }
 
 
+// Open University List from URL
+if (location.hash === "#universities") {
 
+    showUniversities();
 
+}

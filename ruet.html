@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rajshahi University of Engineering & Technology (RUET) | Admission Orbit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+<div class="hero-inner">
+<a class="back-link" href="index.html#universities">← Back to all universities</a>
+<br>
+<span id="uniType" class="badge">Public</span>
+<h1 id="uniName">Rajshahi University of Engineering & Technology (RUET)</h1>
+</div>
+</header>
+<div class="container">
+<div id="stats" class="stats"></div>
+<div class="main">
+<div class="details"><div id="info" class="card-box"></div></div>
+<aside class="eligibility card-box">
+<h3>Check Your Eligibility</h3>
+<p class="hint">Enter your results to see which listed units you may be eligible to apply to.</p>
+<div class="field">
+<label for="ssc">SSC GPA</label>
+<input type="number" id="ssc" placeholder="5.00" min="0" max="5" step="0.01">
+</div>
+<div class="field">
+<label for="hsc">HSC GPA</label>
+<input type="number" id="hsc" placeholder="5.00" min="0" max="5" step="0.01">
+</div>
+<div class="field">
+<label for="group">Group</label>
+<select id="group">
+<option value="">Select group</option>
+<option value="Science">Science</option>
+<option value="Business">Business Studies</option>
+<option value="Humanities">Humanities / Arts</option>
+</select>
+</div>
+<button class="primary" onclick="checkEligibility()">Check Eligibility</button>
+<div id="result"></div>
+</aside>
+</div>
+</div>
+<footer class="footer">Admission Orbit - always confirm details on the official university website before applying.</footer>
+<script src="ruet.js"></script>
+</body>
+</html>
