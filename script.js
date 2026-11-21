@@ -1,78 +1,104 @@
+
 let currentType = "public";
 
-// fill the city dropdown
-const citySelect = document.getElementById("city");
-for (const name in cities) {
-  citySelect.innerHTML += '<option value="' + name + '">' + name + '</option>';
+// Open the Public or Private university list
+function showUniversities(type) {
+    currentType = type;
+
+
+
+    document.getElementById("homePage").classList.add("hidden");
+    document.getElementById("universityPage").classList.remove("hidden");
+
+    document.getElementById("pageTitle").textContent =
+        type === "public" ? "Public Universities" : "Private Universities";
+
+    render();
 }
 
-// Open the Public or Private list
-function showUniversities(type) {
-  currentType = type;
-  location.hash = type;                 // so the Back link from a university page returns here
-  document.getElementById("homePage").classList.add("hidden");
-  document.getElementById("universityPage").classList.remove("hidden");
-  document.getElementById("pageTitle").innerHTML =
-    type === "public" ? "Public Universities" : "Private Universities";
-  render();
-}
 
 // Back to the home page
 function goBack() {
-  history.replaceState(null, "", "index.html");
-  document.getElementById("universityPage").classList.add("hidden");
-  document.getElementById("homePage").classList.remove("hidden");
+
+    document.getElementById("universityPage").classList.add("hidden");
+    document.getElementById("homePage").classList.remove("hidden");
+
+    currentType = "public";
 }
 
-function chooseCity() {
-  const name = citySelect.value;
-  if (name) { saveLocation(cities[name][0], cities[name][1], name); render(); }
-}
 
-function useGPS() {
-  navigator.geolocation.getCurrentPosition(function (p) {
-    saveLocation(p.coords.latitude, p.coords.longitude, "your GPS location");
-    render();
-  }, function () { alert("Could not get location. Please choose a city instead."); });
-}
-
-// Draw the university buttons
+// Display and sort universities
 function render() {
-  const loc = getLocation();
-  document.getElementById("locText").innerHTML =
-    loc ? "Distances measured from: <b>" + loc.label + "</b>"
-        : "Choose your location to see distances.";
 
-  let list = universities.filter(function (u) { return u.type === currentType; });
+    // Get universities according to selected type
+    let list = universities.filter(function (u) {
+        return u.type === currentType;
+    });
 
-  const sort = document.getElementById("sort").value;
-  list.sort(function (a, b) {
-    // empty values always go to the bottom
-    if (sort === "alpha") return a.name.localeCompare(b.name);
-    if (sort === "distance") return (distanceTo(a) ?? 1e9) - (distanceTo(b) ?? 1e9);
-    if (sort === "deadline") return (a.deadline || "9999").localeCompare(b.deadline || "9999");
-    if (sort === "fee") return (a.fee ?? 1e9) - (b.fee ?? 1e9);
-  });
+    // Get selected sorting option
+    const sort = document.getElementById("sort").value;
 
-  const box = document.getElementById("universityList");
-  box.innerHTML = "";
-  list.forEach(function (u) {
-    const d = distanceTo(u);
-    box.innerHTML +=
-      '<a class="uni-btn" href="university.html?id=' + u.id + '">' +
-        '<b>' + u.name + '</b>' +
-        
-'<span>' +
-  'Distance: ' + (d === null ? "N/A" : Math.round(d) + " km") + ' &nbsp;|&nbsp; ' +
-  'Admission Date: ' + (u.deadline ? formatDate(u.deadline) : "Not added") + ' &nbsp;|&nbsp; ' +
-  'Admission Fee: ' + (u.admissionFee === null ? "Not added" : u.admissionFee + " Tk") +
-'</span>' +
- +
-      '</a>';
-  });
+    // Sort universities
+    list.sort(function (a, b) {
+
+        // Alphabetical order
+        if (sort === "alpha") {
+            return a.name.localeCompare(b.name);
+        }
+
+        // Application deadline (earliest first)
+        if (sort === "deadline") {
+            return (a.deadline || "9999").localeCompare(
+                b.deadline || "9999"
+            );
+        }
+
+        // Application fee (lowest first)
+        if (sort === "fee") {
+            return (a.fee ?? 1e9) - (b.fee ?? 1e9);
+        }
+
+        return 0;
+    });
+
+
+    // Get university list container
+    const box = document.getElementById("universityList");
+
+    // Clear previous university cards
+    box.innerHTML = "";
+
+
+    // Create university cards
+    list.forEach(function (u) {
+
+        const card = document.createElement("a");
+
+        card.className = "uni-btn";
+        card.href = "university.html?id=" + encodeURIComponent(u.id);
+
+        const name = document.createElement("b");
+        name.textContent = u.name;
+
+        const details = document.createElement("span");
+
+        const deadline = u.deadline
+            ? formatDate(u.deadline)
+            : "Deadline not added";
+
+        const fee = u.fee === null
+            ? "Fee not added"
+            : u.fee + " Tk";
+
+        details.textContent = deadline + " | " + fee;
+
+        card.appendChild(name);
+        card.appendChild(details);
+
+        box.appendChild(card);
+    });
 }
 
-// If we arrive from a university page (index.html#public), open that list directly
-if (location.hash === "#public" || location.hash === "#private") {
-  showUniversities(location.hash.replace("#", ""));
-}
+
+
+

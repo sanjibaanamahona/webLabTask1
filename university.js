@@ -1,121 +1,411 @@
-// find which university from the link: university.html?id=buet
+
+// Get university ID from the URL
 const id = new URLSearchParams(location.search).get("id");
-const u = universities.find(function (x) { return x.id === id; });
-const NA = "Not added yet - check official website";
 
-// turns [3.5, 3.5, 8.0] into "SSC 3.5, HSC 3.5, Total 8"
-function minText(m) {
-  const parts = [];
-  if (m[0] !== null) parts.push("SSC " + m[0]);
-  if (m[1] !== null) parts.push("HSC " + m[1]);
-  if (m[2] !== null) parts.push("Total " + m[2]);
-  return parts.length ? parts.join(", ") : "see note";
+// Find the selected university
+const u = universities.find(function (uni) {
+    return uni.id === id;
+});
+
+
+// Convert special characters into HTML-safe text
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, function (char) {
+        const symbols = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        };
+
+        return symbols[char];
+    });
 }
 
-// one labelled section
-function block(title, value) {
-  return '<div class="block"><h4>' + title + '</h4><div class="value">' + (value || NA) + '</div></div>';
+
+// Check whether university exists
+if (u) {
+
+    // Display university name
+    document.title = u.name;
+    document.getElementById("uniName").textContent = u.name;
+
+
+    // Display university type
+    document.getElementById("uniType").textContent = u.type;
+    document.getElementById("uniType").className = "badge " + u.type;
+
+
+    // Display quick facts
+    let stats = "";
+
+    stats += '<div class="stat card-box">';
+    stats += '<span>Application deadline</span><b>';
+    stats += u.deadline ? deadlineStatus(u) : "Not added yet";
+    stats += '</b></div>';
+
+    stats += '<div class="stat card-box">';
+    stats += '<span>Application fee</span><b>';
+    stats += u.fee === null ? "Not added yet" : u.fee + " Tk";
+    stats += '</b></div>';
+
+    stats += '<div class="stat card-box">';
+    stats += '<span>Admission test</span><b>';
+    stats += u.testDate ? "See details below" : "Not added yet";
+    stats += '</b></div>';
+
+    document.getElementById("stats").innerHTML = stats;
+
+
+    // Display university units and GPA requirements
+    let units = "";
+
+    u.units.forEach(function (unit) {
+
+        units += '<div class="unit">';
+
+        units += '<b>' + escapeHTML(unit.name) + '</b>';
+
+        units += '<div>Who can apply: ' +
+            escapeHTML(unit.groups.join(", ")) + '</div>';
+
+        units += '<div>Minimum GPA: ';
+
+        let minimum = [];
+
+        if (unit.min[0] !== null) {
+            minimum.push("SSC " + unit.min[0]);
+        }
+
+        if (unit.min[1] !== null) {
+            minimum.push("HSC " + unit.min[1]);
+        }
+
+        if (unit.min[2] !== null) {
+            minimum.push("Total " + unit.min[2]);
+        }
+
+        units += minimum.length
+            ? escapeHTML(minimum.join(", "))
+            : "See official requirements";
+
+        units += '</div>';
+
+        if (unit.note) {
+            units += '<div class="small">' +
+                escapeHTML(unit.note) + '</div>';
+        }
+
+        units += '</div>';
+    });
+
+
+    // Display application period
+    let application = "Not added yet";
+
+    if (u.applicationStart && u.deadline) {
+        application = formatDate(u.applicationStart) +
+            " to " + formatDate(u.deadline);
+    }
+    else if (u.applicationStart) {
+        application = "Opens " + formatDate(u.applicationStart);
+    }
+    else if (u.deadline) {
+        application = "Until " + formatDate(u.deadline);
+    }
+
+
+    // Display application fee
+    let fee = "Not added yet";
+
+    if (u.fee !== null) {
+
+        fee = escapeHTML(u.fee + " Tk");
+
+        if (u.feeNote) {
+            fee += '<div class="small">' +
+                escapeHTML(u.feeNote) + '</div>';
+        }
+    }
+
+
+    // Display admission and tuition fees
+    let tuition = "";
+
+    if (u.admissionFee !== null) {
+        tuition += escapeHTML(u.admissionFee + " Tk<br>");
+    }
+
+    if (u.tuition) {
+        tuition += escapeHTML(u.tuition);
+    }
+
+
+    // Display contact information
+    let contact = "";
+
+    if (u.phone) {
+        contact += "Phone: " + escapeHTML(u.phone) + "<br>";
+    }
+
+    if (u.email) {
+        contact += "Email: " + escapeHTML(u.email);
+    }
+
+
+    // Display university location
+    let location = "Not added yet";
+
+    if (u.address) {
+        location = escapeHTML(u.address);
+    }
+
+
+    // Display official website
+    let website = "";
+
+    if (u.website) {
+        website = '<a class="linkbtn" href="' +
+            escapeHTML(u.website) +
+            '" target="_blank" rel="noopener noreferrer">' +
+            'Official website</a>';
+    }
+
+
+    // Display all university information
+    let info = "";
+
+    info += '<div class="block"><h4>About</h4>';
+    info += '<div class="value">' +
+        escapeHTML(u.about || "Not added yet") + '</div></div>';
+
+    info += '<div class="block"><h4>Application period</h4>';
+    info += '<div class="value">' +
+        escapeHTML(application) + '</div></div>';
+
+    info += '<div class="block"><h4>Admission test date</h4>';
+    info += '<div class="value">' +
+        escapeHTML(u.testDate || "Not added yet") + '</div></div>';
+
+    info += '<div class="block"><h4>Application fee</h4>';
+    info += '<div class="value">' + fee + '</div></div>';
+
+    info += '<div class="block"><h4>Admission / tuition fee</h4>';
+    info += '<div class="value">' +
+        (tuition || "Not added yet") + '</div></div>';
+
+    info += '<div class="block"><h4>Units and GPA requirements</h4>';
+    info += '<div class="value">' +
+        (units || "Not added yet") + '</div></div>';
+
+    info += '<div class="block"><h4>Programs / departments</h4>';
+    info += '<div class="value">' +
+        escapeHTML(u.programs || "Not added yet") + '</div></div>';
+
+    info += '<div class="block"><h4>Total seats</h4>';
+    info += '<div class="value">' +
+        escapeHTML(u.seats || "Not added yet") + '</div></div>';
+
+    info += '<div class="block"><h4>Scholarship / waiver</h4>';
+    info += '<div class="value">' +
+        escapeHTML(u.scholarship || "Not added yet") + '</div></div>';
+
+    info += '<div class="block"><h4>Contact</h4>';
+    info += '<div class="value">' +
+        (contact || "Not added yet") + '</div></div>';
+
+    info += '<div class="block"><h4>Location</h4>';
+    info += '<div class="value">' + location + '</div></div>';
+
+    if (u.note) {
+        info += '<div class="note"><b>Note:</b> ' +
+            escapeHTML(u.note) + '</div>';
+    }
+
+    if (website) {
+        info += '<div class="links">' + website + '</div>';
+    }
+
+    document.getElementById("info").innerHTML = info;
+
+}
+else {
+
+    // University not found
+    document.body.innerHTML =
+        '<p style="padding:20px">' +
+        'University not found. ' +
+        '<a href="index.html">Go back</a></p>';
 }
 
-// one quick-fact tile at the top
-function stat(label, value) {
-  return '<div class="stat card-box"><span>' + label + '</span><b>' + (value || "Not added yet") + '</b></div>';
-}
 
-// days left until the deadline
-function daysLeft(u) {
-  if (!u.deadline) return "";
-  const days = Math.ceil((new Date(u.deadline + "T23:59:59") - new Date()) / 86400000);
-  if (days < 0) return " - closed " + Math.abs(days) + " days ago";
-  return " - " + days + " days left";
-}
-
-// "15 November 2026 to 30 November 2026"
-function applicationPeriod(u) {
-  if (u.applicationStart && u.deadline) return formatDate(u.applicationStart) + " to " + formatDate(u.deadline);
-  if (u.applicationStart) return "Opens " + formatDate(u.applicationStart) + " (deadline not announced)";
-  if (u.deadline) return "Until " + formatDate(u.deadline);
-  return "";
-}
-
-if (!u) {
-  document.body.innerHTML = '<p style="padding:20px">University not found. <a href="index.html">Go back</a></p>';
-} else {
-  document.title = u.name;
-  document.getElementById("uniName").innerHTML = u.name;
-  const typeTag = document.getElementById("uniType");
-  typeTag.innerHTML = u.type;
-  typeTag.className = "badge " + u.type;
-
-  const d = distanceTo(u);
-
-  // quick facts
-  document.getElementById("stats").innerHTML =
-    stat("Application deadline", u.deadline ? deadlineStatus(u) : "") +
-    stat("Application fee", u.fee === null ? "" : u.fee + " Tk") +
-    stat("Admission test", u.testDate ? "See details below" : "") +
-    stat("Distance from you", d === null ? "Choose location on home page" : Math.round(d) + " km");
-
-  const unitText = u.units.length
-    ? u.units.map(function (x) {
-        return '<div class="unit"><b>' + x.name + '</b>' +
-               '<div>Who can apply: ' + x.groups.join(", ") + '</div>' +
-               '<div>Minimum GPA: ' + minText(x.min) + '</div>' +
-               (x.note ? '<div class="small">' + x.note + '</div>' : "") + '</div>';
-      }).join("")
-    : "";
-
-  const contact = [
-    u.address ? "Address: " + u.address : "",
-    u.phone ? "Phone: " + u.phone : "",
-    u.email ? "Email: " + u.email : ""
-  ].filter(Boolean).join("<br>");
-
-  const links =
-    (u.website ? '<a class="linkbtn" href="' + u.website + '" target="_blank">Official website</a>' : "") +
-    (u.lat !== null ? '<a class="linkbtn light" href="https://www.google.com/maps?q=' + u.lat + ',' + u.lng + '" target="_blank">See on map</a>' : "");
-
-  document.getElementById("info").innerHTML =
-    block("About", u.about) +
-    block("Application period", applicationPeriod(u) + (u.deadline ? '<div class="small">' + deadlineStatus(u) + daysLeft(u) + '</div>' : "")) +
-    block("Admission test date", u.testDate) +
-    block("Application fee", u.fee === null ? "" : u.fee + " Tk" + (u.feeNote ? '<div class="small">' + u.feeNote + '</div>' : "")) +
-    block("Admission / tuition fee", (u.admissionFee === null ? "" : u.admissionFee + " Tk<br>") + u.tuition) +
-    block("Units, who can apply and minimum GPA", unitText) +
-    block("Programs / departments", u.programs) +
-    block("Total seats", u.seats) +
-    block("Scholarship / waiver", u.scholarship) +
-    block("Contact", contact) +
-    (u.note ? '<div class="note"><b>Note:</b> ' + u.note + '</div>' : "") +
-    (links ? '<div class="links">' + links + '</div>' : "");
-}
+// ===================================
+// ELIGIBILITY CHECKER
+// ===================================
 
 function checkEligibility() {
-  const ssc = Number(document.getElementById("ssc").value);
-  const hsc = Number(document.getElementById("hsc").value);
-  const group = document.getElementById("group").value;
-  const out = document.getElementById("result");
 
-  function show(cls, html) { out.className = cls; out.innerHTML = html; }
+    // Get student information
+    const ssc = document.getElementById("ssc").value;
+    const hsc = document.getElementById("hsc").value;
+    const group = document.getElementById("group").value;
 
-  if (!ssc || !hsc || !group) { show("warn", "Please fill all fields."); return; }
-  if (!u.units.length) { show("warn", "Requirements not added yet for this university. Check the official website."); return; }
+    const result = document.getElementById("result");
 
-  const forGroup = u.units.filter(function (x) { return x.groups.includes(group); });
-  if (!forGroup.length) { show("no", "<b>Not eligible</b><br>No unit here accepts your group."); return; }
 
-  const total = ssc + hsc;
-  const ok = forGroup.filter(function (x) {
-    const m = x.min;
-    return (m[0] === null || ssc >= m[0]) && (m[1] === null || hsc >= m[1]) && (m[2] === null || total >= m[2]);
-  });
+    // Check empty fields
+    if (ssc === "" || hsc === "" || group === "") {
 
-  if (!ok.length) {
-    show("no", "<b>Not eligible</b><br>Your GPA is below the minimum for your group.<br><br>" +
-      forGroup.map(function (x) { return x.name + ": " + minText(x.min); }).join("<br>"));
-    return;
-  }
+        result.className = "warn";
+        result.innerHTML = "Please fill all fields.";
 
-  show("ok", "<b>You are eligible to apply!</b><br>You can apply to:<br>" +
-    ok.map(function (x) { return "&bull; " + x.name + (x.note ? " <i>(" + x.note + ")</i>" : ""); }).join("<br>"));
+        return;
+    }
+
+
+    // Convert GPA into numbers
+    const sscGPA = Number(ssc);
+    const hscGPA = Number(hsc);
+
+
+    // Check valid GPA
+    if (
+        !Number.isFinite(sscGPA) ||
+        !Number.isFinite(hscGPA) ||
+        sscGPA < 0 || sscGPA > 5 ||
+        hscGPA < 0 || hscGPA > 5
+    ) {
+
+        result.className = "warn";
+        result.innerHTML = "Please enter GPA between 0 and 5.";
+
+        return;
+    }
+
+
+    // Check university requirements
+    if (!u || u.units.length === 0) {
+
+        result.className = "warn";
+        result.innerHTML =
+            "Requirements not added yet. Check the official website.";
+
+        return;
+    }
+
+
+    // Calculate total GPA
+    const totalGPA = sscGPA + hscGPA;
+
+    let eligible = "";
+    let possible = "";
+    let failed = "";
+    let groupFound = false;
+
+
+    // Check each university unit
+    u.units.forEach(function (unit) {
+
+        if (unit.groups.includes(group)) {
+
+            groupFound = true;
+
+            const min = unit.min;
+
+            let notEligible = false;
+            let unknown = false;
+
+
+            // Check SSC GPA
+            if (min[0] === null) {
+                unknown = true;
+            }
+            else if (sscGPA < min[0]) {
+                notEligible = true;
+            }
+
+
+            // Check HSC GPA
+            if (min[1] === null) {
+                unknown = true;
+            }
+            else if (hscGPA < min[1]) {
+                notEligible = true;
+            }
+
+
+            // Check total GPA
+            if (min[2] === null) {
+                unknown = true;
+            }
+            else if (totalGPA < min[2]) {
+                notEligible = true;
+            }
+
+
+            // Store eligibility result
+            if (notEligible) {
+                failed += escapeHTML(unit.name) + "<br>";
+            }
+            else if (unknown) {
+                possible += escapeHTML(unit.name) + "<br>";
+            }
+            else {
+                eligible += escapeHTML(unit.name) + "<br>";
+            }
+
+        }
+
+    });
+
+
+    // Check whether the student's group is accepted
+    if (!groupFound) {
+
+        result.className = "no";
+        result.innerHTML =
+            "<b>Not eligible</b><br>No unit accepts your group.";
+
+        return;
+    }
+
+
+    // Display eligibility result
+    if (eligible !== "") {
+
+        result.className = "ok";
+
+        result.innerHTML =
+            "<b>You meet the listed GPA requirements!</b><br>" +
+            "You can apply to:<br><br>" + eligible;
+    }
+    else if (possible !== "") {
+
+        result.className = "warn";
+
+        result.innerHTML =
+            "<b>Eligibility needs confirmation.</b><br>" +
+            "Some GPA requirements are not available yet.<br><br>" +
+            possible;
+    }
+    else {
+
+        result.className = "no";
+
+        result.innerHTML =
+            "<b>Not eligible</b><br>" +
+            "Your GPA is below the minimum requirement.<br><br>" +
+            failed;
+    }
+
+
+    // Also show units with incomplete requirements
+    if (eligible !== "" && possible !== "") {
+
+        result.innerHTML +=
+            "<br><br><b>Eligibility needs confirmation for:</b><br>" +
+            possible;
+    }
+
 }
