@@ -61,11 +61,13 @@ function render() {
     box.innerHTML +=
       '<a class="uni-btn" href="university.html?id=' + u.id + '">' +
         '<b>' + u.name + '</b>' +
-        '<span>' +
-          (d === null ? "Distance N/A" : Math.round(d) + " km away") + ' &nbsp;|&nbsp; ' +
-          (u.deadline ? formatDate(u.deadline) : "Deadline not added") + ' &nbsp;|&nbsp; ' +
-          (u.fee === null ? "Fee not added" : u.fee + " Tk") +
-        '</span>' +
+        
+'<span>' +
+  'Distance: ' + (d === null ? "N/A" : Math.round(d) + " km") + ' &nbsp;|&nbsp; ' +
+  'Admission Date: ' + (u.deadline ? formatDate(u.deadline) : "Not added") + ' &nbsp;|&nbsp; ' +
+  'Admission Fee: ' + (u.admissionFee === null ? "Not added" : u.admissionFee + " Tk") +
+'</span>' +
+ +
       '</a>';
   });
 }
