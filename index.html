@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admission Orbit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container home">
+
+  <h1 class="page-title">ADMISSION ORBIT</h1>
+  <p class="page-sub">Find universities in Bangladesh, compare deadlines and fees, and check your eligibility.</p>
+
+  <!-- Home Page -->
+  <div id="homePage" class="page">
+    <div class="button-box card-box">
+      <h2>Choose university type</h2>
+      <button class="big" onclick="showUniversities('public')">Public</button>
+      <button class="big" onclick="showUniversities('private')">Private</button>
+    </div>
+  </div>
+
+  <!-- University Page -->
+  <div id="universityPage" class="page hidden">
+
+    <div class="list-top">
+      <h2 id="pageTitle" class="chip">Public Universities</h2>
+
+      <div class="right">
+        <select id="city" onchange="chooseCity()"><option value="">Your location...</option></select>
+        <button onclick="useGPS()">Use my GPS</button>
+        <select id="sort" onchange="render()">
+          <option value="alpha">Sort: Alphabetical</option>
+          <option value="distance">Sort: Distance</option>
+          <option value="deadline">Sort: Application deadline</option>
+          <option value="fee">Sort: Application fee</option>
+        </select>
+      </div>
+    </div>
+
+    <p id="locText"></p>
+
+    <div id="universityList" class="uni-grid"></div>
+
+    <button class="back-button" onclick="goBack()">Back</button>
+  </div>
+
+</div>
+
+<footer class="footer">Admission Orbit - always confirm details on the official university website before applying.</footer>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
